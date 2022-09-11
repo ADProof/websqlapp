@@ -4,21 +4,18 @@ using websqlapp.Models;
 
 namespace websqlapp.Services;
 
-public class ProductService
+public class ProductService : IProductService
 {
-    public static string db_server { get; set; } = "stratexserver.database.windows.net";
-    public static string db_user { get; set; } = "stratexadmin";
-    public static string db_password { get; set; } = "Atrain@2022!";
-    public static string db_catalog { get; set; } = "stratexdb";
+    private readonly IConfiguration _configuration;
+
+    public ProductService(IConfiguration configuration)
+    {
+        _configuration=configuration;
+    }
 
     private SqlConnection GetConnection()
     {
-        var _builder = new SqlConnectionStringBuilder();
-        _builder.DataSource = db_server;
-        _builder.UserID = db_user;
-        _builder.Password = db_password;
-        _builder.InitialCatalog = db_catalog;
-        return new SqlConnection(_builder.ConnectionString);
+        return new SqlConnection(_configuration.GetConnectionString("SQLConnection"));
     }
     public List<Product> GetProducts()
     {
